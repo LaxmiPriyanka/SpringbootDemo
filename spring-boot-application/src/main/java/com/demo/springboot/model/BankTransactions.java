@@ -17,13 +17,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 	@NamedQuery(name = "BankTransactions.findTransactionByAccId", query = "SELECT u FROM BankTransactions u WHERE u.account.id =:accountId ")
-/*@Entity
-@Table(name = "employee", schema="spring_data_jpa_example")
-@NamedQuery(name = "Employee.fetchByLastNameLength",
-        query = "SELECT e FROM Employee e WHERE CHAR_LENGTH(e.lastname) =:length "
-)*/
-@SQLDelete(sql="UPDATE BankTransactions SET deleted = '1' WHERE id = ?")
-@Where(clause="deleted=0")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BankTransactions extends AbstractModel<Long> implements Serializable{
 	/**
