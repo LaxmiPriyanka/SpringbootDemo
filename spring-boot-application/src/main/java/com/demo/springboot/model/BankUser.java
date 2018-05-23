@@ -21,23 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "BankUser")
 	@NamedQuery(name="BankUser.findByName", query="select u from BankUser u where u.username like :username")
-
-/*@NamedNativeQueries({
-	@NamedNativeQuery(
-	name = "getUniqueUserByBankUserName",
-	query = "select * from BankUser u where u.username like :username",
-        resultClass = BankUser.class
-	)
-})*/
-@SQLDelete(sql="UPDATE BankUser SET deleted = '1' WHERE id = ?")
-@Where(clause="deleted=0")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BankUser extends AbstractModel<Long> implements Serializable {
-
-	
-	/**
-	 * 
-	 */
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
