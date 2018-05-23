@@ -18,9 +18,6 @@ import com.demo.springboot.util.model.AbstractModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-
-@SQLDelete(sql="UPDATE BankAccount SET deleted = '1' WHERE id = ?")
-@Where(clause="deleted=0")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BankAccount extends AbstractModel<Long> implements Serializable  {
 
