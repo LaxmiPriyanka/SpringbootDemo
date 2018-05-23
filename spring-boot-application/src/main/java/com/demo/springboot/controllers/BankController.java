@@ -170,8 +170,6 @@ public class BankController {
 	//get all the accounts
 	@RequestMapping(value="new/{id}",method=RequestMethod.GET)
     public @ResponseBody String toGetAccountById(@PathVariable(value="id")Long Id) throws Exception{
-       /* BankAccount account = bankService.getAccountById(Id);
-        BankUser bankUser=account.getUser();       */
 		Optional<BankAccount> bankAccount=accountDao.findById(Id);
 		BankAccount account = bankAccount.get();
 		BankUser bankUser=bankAccount.get().getUser();
@@ -224,43 +222,33 @@ public class BankController {
 	//Deleting Account 
 	@RequestMapping(value="new/{id}",method= RequestMethod.DELETE)
 	public @ResponseBody String deleteAccountById(@PathVariable("id")long Id) {
-		try {
-			accountDao.deleteById(Id);
-			return "{\"result\":\"success\"}";
-		}catch(Exception e) {
-			e.printStackTrace();
-			return "{\"result\":\"failed\"}";
+		System.out.println("In Bank controller Delete");
+		boolean res= deleteAccount(Id);
+		System.out.println(res);
+		String result="{}";
+		if(res==true)
+		{
+			result = "{\"result\":\"success\"}";
 		}
-		
-		
-		
+		else
+		{
+			result = "{\"result\":\"failed\"}";
+		}
+		return result;
 	}
-
-	@RequestMapping(value="accountHolder/{id}",method=RequestMethod.GET)
-    public @ResponseBody String getaccountByUserId(@PathVariable(value="id")Long Id) throws Exception{
+	
+	public boolean deleteAccount(long id) {
+		Optional<BankAccount> bankAccount=accountDao.findById(id);
+		BankUser bankUser=bankAccount.get().getUser();
+		Collection<BankTransactions> bankTransaction=bankAccount.get().getTransactions();		
 		
-		Optional<BankUser> bankUser=userDao.findById(Id);
-		if(bankUser.get()!=null) {
-		bankUser.get().getBankAccount();
-        BankAccount account = bankUser.get().getBankAccount();
-        JsonWrapper wrapper= new JsonWrapper();
-        wrapper.writeStartObject();              
-      
-        wrapper.writeStringField("username",bankUser.get().getUserName());
-        wrapper.writeStringField("accountNumber", String.valueOf(account.getId()));
-        wrapper.writeStringField("accountHolderName", account.getAccName());
-        wrapper.writeStringField("accountType", account.getAccType());
-        wrapper.writeStringField("balance", String.valueOf(account.getBalance()));
-               
-        wrapper.writeEndObject();
-
-        wrapper.close();
-        System.out.println(wrapper.getJsonValue());
-        return wrapper.getJsonValue();
-		}else {
-			return "{\"result\":\"User details not found\"}";
+		for(BankTransactions transaction:bankTransaction){
+			transactionDao.delete(transaction);
 		}
-        
+		
+		userDao.delete(bankUser);
+		accountDao.delete(bankAccount.get());
+		return true;
 	}
 
 	@RequestMapping(value="accountHolder/{id}",method=RequestMethod.PUT)
